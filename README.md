@@ -5,21 +5,21 @@ Created this project while learning GraphQL
 Tutorial [link](https://www.youtube.com/watch?v=ed8SzALpx1Q)
 
 ### Start server
-Go to server directory and create a .env file with the following variables
+In the root directory of the project create a .env file with the following variables
 
 ```
-DB_USER="mongo_db_username"
-DB_PASS="mongo_db_password"
+DB_CONNECTION_STRING=<mongo db connection string>
+NODE_ENV=<production | development | test>
 ```
-Note: The application uses MongoDB Atlas as cloud MongoDB database service provider
+Note: Test is not added yet.
 
-After setting up run `npm run start:dev` to run development server and run
-`npm start` to run normal server.
+```
+# to build React client
+npm run install-client
 
-Server runs on port 4000
+# to start express server
+npm start
 
-### Start client
-Go to client directory and start the React server
-
-Run `npm start` to run React development server and run `npm build` to build React
-production code
+# to run development server
+npm run start-dev-server
+```
