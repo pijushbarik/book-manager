@@ -4,6 +4,7 @@ const express = require('express');
 const graphqlHTTP = require('express-graphql');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 
 // Local components
 const schema = require('./schema/schema');
@@ -14,10 +15,8 @@ const app = express();
 app.use(cors());
 
 // Connect to the MongoDB Atlas database
-const DB_CONNECTION_STRING = `mongodb+srv://${process.env.DB_USER}` + 
-    `:${process.env.DB_PASS}@cluster0-8vewa.mongodb.net/book-manager`;
 mongoose.connect(
-    DB_CONNECTION_STRING,
+    process.env.DB_CONNECTION_STRING,
     { 
         useNewUrlParser: true,
         useUnifiedTopology: true
@@ -28,14 +27,31 @@ mongoose.connect(
             // console.log(err);
         }
     });
+
 mongoose.connection.once("open", () => {
     console.log("connected to mongodb database");
+
+    // Listen for a connection
+    const port = process.env.PORT || 4000;
+    app.listen(port, () => {
+        console.log(`Server is up & running on port ${port}`);
+    });
 });
+
+// Serve static files for React client\
+app.use(express.static(path.join(__dirname, "/client/build")));
 
 // Forward API requests to GraphQLHTTP middleware
-app.use("/graphql", graphqlHTTP({ schema, graphiql: true }));
+app.use("/graphql", graphqlHTTP({ schema }));
 
-// Listen for a connection
-app.listen(4000, () => {
-    console.log("Server is running on port 4000");
-});
+// Forward any other API requests to React client
+// Production mode
+if(process.env.NODE_ENV === 'production') {
+    app.get("*", (req, res) =>{
+        res.sendFile(path.join(__dirname, "/client/build/index.html"));
+    });
+} else {
+    app.get("*", (req, res) =>{
+        res.sendFile(path.join(__dirname, "/client/public/index.html"));
+    });
+}
