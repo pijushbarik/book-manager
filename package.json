@@ -9,7 +9,7 @@
     "start-server": "nodemon server.js",
     "start-client": "npm start --prefix client",
     "start-dev-server": "concurrently \"npm run start-server\" \"npm run start-client\"",
-    "heroku-postbuild": "npm install --prefix client && npm run install-client"
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "keywords": [],
   "author": "Pijush Barik (pijush.barik8@gmail.com)",
